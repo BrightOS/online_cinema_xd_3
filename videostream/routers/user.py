@@ -3,6 +3,7 @@ from botocore.exceptions import ClientError
 from config import settings
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
+from schemas.error import ErrorResponse
 from utils.logger import logger
 
 api_router = APIRouter(tags=["user"])
@@ -16,7 +17,19 @@ s3_client = boto3.client(
 bucket_name: str = settings.S3_BUCKET
 
 
-@api_router.get("/file/{id}/{filename}")
+@api_router.get(
+    "/file/{id}/{filename}",
+    responses={
+        200: {
+            "content": {
+                "application/vnd.apple.mpegurl": {},
+                "video/mp2t": {},
+                "application/octet-stream": {}
+            }
+        },
+        404: {"model": ErrorResponse}
+    }
+)
 async def stream_audio_hls(id: str, filename: str) -> StreamingResponse:
     try:
         s3_response = s3_client.get_object(Bucket=bucket_name, Key=f"{id}/{filename}")
