@@ -5,7 +5,7 @@ from config import settings
 from utils.process import file_process
 
 
-api_router = APIRouter(tags=["admin"])
+api_router = APIRouter(tags=["admin"], prefix='/admin')
 
 s3_client = boto3.client(
     "s3",

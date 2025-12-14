@@ -9,7 +9,7 @@ from utils.logger import logger
 from config import settings
 
 
-api_router = APIRouter(tags=[""])
+api_router = APIRouter(tags=["user"])
 
 s3_client = boto3.client(
     "s3",
