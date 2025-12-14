@@ -1,10 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from uvicorn import run
-
 from routers.admin import api_router as admin_router
 from routers.user import api_router as user_router
-
+from uvicorn import run
 
 app = FastAPI()
 
@@ -20,10 +18,4 @@ app.include_router(admin_router)
 app.include_router(user_router)
 
 if __name__ == "__main__":
-    run(
-        "main:app",
-        host="0.0.0.0",
-        port=8002,
-        log_level="debug",
-        timeout_keep_alive=60
-    )
+    run("main:app", host="0.0.0.0", port=8002, log_level="debug", timeout_keep_alive=60)
