@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HLS Player</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.10/dist/hls.min.js"></script>
+    <style>
+        body { margin: 20px; font-family: sans-serif; }
+        .input { margin: 10px 0; }
+        input { width: 200px; padding: 8px; }
+        button { padding: 8px 15px; background: #007bff; color: white; border: none; cursor: pointer; }
+        video { width: 100%; max-width: 800px; margin-top: 10px; }
+        .status { margin-top: 10px; padding: 10px; background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h2>HLS Player (Только для локальных тестов)</h2>
+    
+    <div class="input">
+        <div>Server URL:</div>
+        <input id="serverUrl" value="http://localhost:8000">
+    </div>
+    
+    <div class="input">
+        <div>Video ID:</div>
+        <input id="videoId" value="test123">
+    </div>
+    
+    <button onclick="loadVideo()">Load Video</button>
+    
+    <div>
+        <video id="player" controls></video>
+    </div>
+    
+    <div id="status" class="status"></div>
+
+    <script>
+        let hls = null;
+        
+        function loadVideo() {
+            const serverUrl = document.getElementById('serverUrl').value.trim();
+            const videoId = document.getElementById('videoId').value.trim();
+            const player = document.getElementById('player');
+            const status = document.getElementById('status');
+            
+            if (!videoId) {
+                status.textContent = "Enter Video ID";
+                return;
+            }
+            
+            const playlistUrl = `${serverUrl}/file/${videoId}/${videoId}-playlist.m3u8`;
+            status.textContent = `Loading: ${playlistUrl}`;
+
+            if (hls) hls.destroy();
+            player.src = '';
+
+            if (player.canPlayType('application/vnd.apple.mpegurl')) {
+                player.src = playlistUrl;
+                status.textContent = "Playing with native HLS";
+            }
+            else if (Hls.isSupported()) {
+                hls = new Hls();
+                hls.loadSource(playlistUrl);
+                hls.attachMedia(player);
+                hls.on(Hls.Events.MANIFEST_PARSED, () => {
+                    status.textContent = "Playing with hls.js";
+                });
+            } else {
+                status.textContent = "Browser doesn't support HLS";
+            }
+        }
+        document.getElementById('videoId').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') loadVideo();
+        });
+    </script>
+</body>
+</html>
