@@ -4,6 +4,7 @@ from fastapi import HTTPException
 from fastapi.responses import StreamingResponse
 import boto3
 from botocore.exceptions import ClientError
+from utils.logger import logger
 
 from config import settings
 
@@ -32,6 +33,8 @@ async def stream_audio_hls(id: str, filename: str):
         media_type = "video/mp2t"
     else:
         media_type = "application/octet-stream"
+
+    logger.debug(f"{id}/{filename}: file streaming")
 
     return StreamingResponse(
         content=s3_response['Body'].iter_chunks(),

@@ -1,5 +1,5 @@
 import boto3
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, HTTPException
 
 from config import settings
 from utils.process import file_process
@@ -27,7 +27,7 @@ async def upload(
     res = await file_process(id, s3_key)
 
     if res is not None:
-        print(res)
+        raise HTTPException(status_code=500, detail=res)
 
     return {
         'status': 'OK'

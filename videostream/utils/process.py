@@ -5,7 +5,8 @@ import tempfile
 import os
 import asyncio
 
-from config import settings  
+from config import settings, hls_settings
+from utils.logger import logger
 
 
 s3_client = boto3.client(
@@ -28,9 +29,10 @@ async def file_process(id, s3_key):
             "ffmpeg",
             "-i", mp4_path,
             "-f", "hls",
-            "-codec", "copy",
+            "-c:v", hls_settings.video_codec,
+            "-c:a", hls_settings.audio_codec,
             "-start_number", "0",
-            "-hls_time", "10",
+            "-hls_time", hls_settings.hls_time,
             "-hls_list_size", "0",
             "-hls_segment_filename", os.path.join(tmp_dir, f"{id}-segment_%04d.ts"),
             os.path.join(tmp_dir, f"{id}-playlist.m3u8")
@@ -42,10 +44,15 @@ async def file_process(id, s3_key):
             stderr=asyncio.subprocess.PIPE
         )
 
+        logger.debug(f"{id}: subprocess created")
+
         await process.wait()
+
+        logger.debug(f"{id}: subprocess finished")
 
         if process.returncode != 0:
             error = await process.stderr.read()
+            logger.error(f"{id}: FFmpeg error: {error.decode()}")
             return f"FFmpeg error: {error.decode()}"
 
         for root, _, files in os.walk(tmp_dir):
@@ -61,3 +68,4 @@ async def file_process(id, s3_key):
                         Key=file_key, 
                         Body=content
                     )
+        logger.debug(f"{id}: all files sended")
