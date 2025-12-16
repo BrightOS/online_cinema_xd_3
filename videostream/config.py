@@ -1,5 +1,6 @@
 import configparser
 
+from celery import Celery
 from pydantic_settings import BaseSettings
 
 
@@ -9,6 +10,7 @@ class Settings(BaseSettings):
     S3_ENDPOINT_URL: str
     aws_access_key_id: str
     aws_secret_access_key: str
+    REDIS_URL: str
 
     class Config:
         env_file: str = ".env"
@@ -29,5 +31,19 @@ class HLSSettings:
         self.hls_time = self.config["HLS"]["hls_time"]
 
 
+class CelerySettings:
+    def __init__(self) -> None:
+        self.app = Celery("videostream")
+        self.app.conf.broker_url = settings.REDIS_URL
+        self.app.conf.result_backend = settings.REDIS_URL
+
+        self.app.conf.include = ["utils.process"]
+        self.app.conf.task_serializer = "pickle"
+        self.app.conf.accept_content = ["pickle"]
+        self.app.conf.result_serializer = "pickle"
+        self.app.conf.timezone = "UTC"
+
+
 settings = Settings()
 hls_settings = HLSSettings()
+celery_settings = CelerySettings()
