@@ -54,6 +54,11 @@ docker-compose up -d
 - Заполнить БД с помощью скрипта `init_db.py`
 - Запустить FastAPI: `uvicorn main:app --reload`
 
+## ElasticSearch
+Для запуска ETL:
+- Зайти в `movies`
+- Запустить: `python -m elastic.etl_to_elastic`
+
 ## Настройки и Конфигурация
 
 ### Docker Compose

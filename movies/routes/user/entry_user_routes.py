@@ -31,7 +31,6 @@ async def get_entries(
 
     return entries_response
 
-
 @router.get(
     "/{entry_id}/",
     response_model=EntryResponse,
