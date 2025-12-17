@@ -48,14 +48,14 @@ docker-compose up -d
 
 *Примечание: MinIO Console доступна по адресу [http://localhost:9001](http://localhost:9001).*
 
-## Подключение к API
+## Подключение к API вручную
 - Зайти в `movies`
 - Заполнить `.env`
-- Заполнить БД с помощью скрипта `init_db.py`
+- Заполнить БД с помощью скрипта: `python -m scripts.init_db`
 - Запустить FastAPI: `uvicorn main:app --reload`
 
 ## ElasticSearch
-Для запуска ETL:
+Для запуска ETL вручную:
 - Зайти в `movies`
 - Запустить: `python -m elastic.etl_to_elastic`
 
@@ -67,6 +67,12 @@ docker-compose up -d
 При запуске автоматически создается:
 - Сеть: `cinema_net`
 - Тома для персистентности данных: `postgres_data`, `elasticsearch_data`, `minio_data`.
+
+### API
+API на FastAPI
+
+### Etl Worker
+Автоматически переливает данные из PostgreSQL в ElasticSearch при изменении таблиц
 
 ### Prometheus
 Конфигурация: `deploy/prometheus/prometheus.yml`

@@ -4,15 +4,12 @@ from sqlalchemy import String, Text, Integer, SmallInteger, Date, DateTime, Fore
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 import enum
 
-
 class Base(DeclarativeBase):
     pass
-
 
 class EntryType(str, enum.Enum):
     FILM = "film"
     SEASON = "season"
-
 
 class MPAARating(str, enum.Enum):
     G = "g"
@@ -21,13 +18,11 @@ class MPAARating(str, enum.Enum):
     R = "r"
     NC17 = "nc17"
 
-
 class ContentStatus(str, enum.Enum):
     ANNOUNCED = "announced"
     ONGOING = "ongoing"
     FINISHED = "finished"
     CANCELLED = "cancelled"
-
 
 class StaffRole(str, enum.Enum):
     ACTOR = "actor"
@@ -36,7 +31,6 @@ class StaffRole(str, enum.Enum):
     WRITER = "writer"
     COMPOSER = "composer"
     OTHER = "other"
-
 
 class Franchise(Base):
     __tablename__ = "franchises"
@@ -47,7 +41,6 @@ class Franchise(Base):
 
     locales: Mapped[List["FranchiseLocale"]] = relationship(back_populates="franchise", cascade="all, delete-orphan", lazy="selectin")
     entries: Mapped[List["Entry"]] = relationship(back_populates="franchise", cascade="all, delete-orphan", lazy="selectin")
-
 
 class FranchiseLocale(Base):
     __tablename__ = "franchise_locales"
@@ -62,7 +55,6 @@ class FranchiseLocale(Base):
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     franchise: Mapped["Franchise"] = relationship(back_populates="locales")
-
 
 class Entry(Base):
     __tablename__ = "entries"
@@ -87,7 +79,6 @@ class Entry(Base):
     genres: Mapped[List["Genre"]] = relationship(secondary="entry_genres", back_populates="entries")
     staff: Mapped[List["EntryStaff"]] = relationship(back_populates="entry", cascade="all, delete-orphan")
 
-
 class EntryLocale(Base):
     __tablename__ = "entry_locales"
 
@@ -98,7 +89,6 @@ class EntryLocale(Base):
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
     entry: Mapped["Entry"] = relationship(back_populates="locales")
-
 
 class Episode(Base):
     __tablename__ = "episodes"
@@ -114,7 +104,6 @@ class Episode(Base):
     entry: Mapped["Entry"] = relationship(back_populates="episodes")
     locales: Mapped[List["EpisodeLocale"]] = relationship(back_populates="episode", cascade="all, delete-orphan")
 
-
 class EpisodeLocale(Base):
     __tablename__ = "episode_locales"
 
@@ -126,7 +115,6 @@ class EpisodeLocale(Base):
 
     episode: Mapped["Episode"] = relationship(back_populates="locales")
 
-
 class Genre(Base):
     __tablename__ = "genres"
 
@@ -134,7 +122,6 @@ class Genre(Base):
     name: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
 
     entries: Mapped[List["Entry"]] = relationship(secondary="entry_genres", back_populates="genres")
-
 
 class EntryGenre(Base):
     __tablename__ = "entry_genres"
@@ -150,7 +137,6 @@ class EntryGenre(Base):
         primary_key=True
     )
 
-
 class Person(Base):
     __tablename__ = "persons"
 
@@ -160,7 +146,6 @@ class Person(Base):
     birth_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
     staff_entries: Mapped[List["EntryStaff"]] = relationship(back_populates="person", cascade="all, delete-orphan")
-
 
 class EntryStaff(Base):
     __tablename__ = "entry_staff"
