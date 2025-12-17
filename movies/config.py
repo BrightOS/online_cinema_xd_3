@@ -1,12 +1,11 @@
 from pydantic_settings import BaseSettings
 
-
 class Settings(BaseSettings):
-    DB_HOST: str = "localhost"
-    DB_PORT: str = "5432"
-    DB_USER: str = "user"
-    DB_PASSWORD: str = "password"
-    DB_NAME: str = "movies"
+    DB_HOST: str
+    DB_PORT: str
+    DB_USER: str
+    DB_PASSWORD: str
+    DB_NAME: str
 
     @property
     def DATABASE_URL(self):
@@ -14,6 +13,5 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
-
 
 settings = Settings()

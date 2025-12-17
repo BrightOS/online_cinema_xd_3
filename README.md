@@ -48,6 +48,12 @@ docker-compose up -d
 
 *Примечание: MinIO Console доступна по адресу [http://localhost:9001](http://localhost:9001).*
 
+## Подключение к API
+- Зайти в `movies`
+- Заполнить `.env`
+- Заполнить БД с помощью скрипта `init_db.py`
+- Запустить FastAPI: `uvicorn main:app --reload`
+
 ## Настройки и Конфигурация
 
 ### Docker Compose

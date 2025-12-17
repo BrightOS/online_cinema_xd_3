@@ -45,7 +45,7 @@ class Franchise(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now, onupdate=datetime.now)
 
-        locales: Mapped[List["FranchiseLocale"]] = relationship(back_populates="franchise", cascade="all, delete-orphan", lazy="selectin")
+    locales: Mapped[List["FranchiseLocale"]] = relationship(back_populates="franchise", cascade="all, delete-orphan", lazy="selectin")
     entries: Mapped[List["Entry"]] = relationship(back_populates="franchise", cascade="all, delete-orphan", lazy="selectin")
 
 
@@ -61,7 +61,7 @@ class FranchiseLocale(Base):
     title: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-        franchise: Mapped["Franchise"] = relationship(back_populates="locales")
+    franchise: Mapped["Franchise"] = relationship(back_populates="locales")
 
 
 class Entry(Base):
@@ -81,7 +81,7 @@ class Entry(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now,
                                                  onupdate=datetime.now)
 
-        franchise: Mapped["Franchise"] = relationship(back_populates="entries")
+    franchise: Mapped["Franchise"] = relationship(back_populates="entries")
     locales: Mapped[List["EntryLocale"]] = relationship(back_populates="entry", cascade="all, delete-orphan")
     episodes: Mapped[List["Episode"]] = relationship(back_populates="entry", cascade="all, delete-orphan")
     genres: Mapped[List["Genre"]] = relationship(secondary="entry_genres", back_populates="entries")
@@ -97,7 +97,7 @@ class EntryLocale(Base):
     title: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-        entry: Mapped["Entry"] = relationship(back_populates="locales")
+    entry: Mapped["Entry"] = relationship(back_populates="locales")
 
 
 class Episode(Base):
@@ -111,7 +111,7 @@ class Episode(Base):
     premiere_digital: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, nullable=False, default=datetime.now)
 
-        entry: Mapped["Entry"] = relationship(back_populates="episodes")
+    entry: Mapped["Entry"] = relationship(back_populates="episodes")
     locales: Mapped[List["EpisodeLocale"]] = relationship(back_populates="episode", cascade="all, delete-orphan")
 
 
@@ -124,7 +124,7 @@ class EpisodeLocale(Base):
     title: Mapped[str] = mapped_column(Text, nullable=False)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-        episode: Mapped["Episode"] = relationship(back_populates="locales")
+    episode: Mapped["Episode"] = relationship(back_populates="locales")
 
 
 class Genre(Base):
@@ -133,7 +133,7 @@ class Genre(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(Text, nullable=False, unique=True)
 
-        entries: Mapped[List["Entry"]] = relationship(secondary="entry_genres", back_populates="genres")
+    entries: Mapped[List["Entry"]] = relationship(secondary="entry_genres", back_populates="genres")
 
 
 class EntryGenre(Base):
@@ -159,7 +159,7 @@ class Person(Base):
     en_name: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     birth_date: Mapped[Optional[date]] = mapped_column(Date, nullable=True)
 
-        staff_entries: Mapped[List["EntryStaff"]] = relationship(back_populates="person", cascade="all, delete-orphan")
+    staff_entries: Mapped[List["EntryStaff"]] = relationship(back_populates="person", cascade="all, delete-orphan")
 
 
 class EntryStaff(Base):
@@ -182,5 +182,5 @@ class EntryStaff(Base):
     )
     character_name: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
-        entry: Mapped["Entry"] = relationship(back_populates="staff")
+    entry: Mapped["Entry"] = relationship(back_populates="staff")
     person: Mapped["Person"] = relationship(back_populates="staff_entries")
