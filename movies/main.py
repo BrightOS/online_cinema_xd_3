@@ -4,12 +4,14 @@ from uvicorn import run
 from routes import list_of_routes
 from prometheus_fastapi_instrumentator import Instrumentator
 from logger import logger, setup_logging
+from tracing import setup_tracing
 from starlette.requests import Request
 import time
 
 setup_logging()
 
 app = FastAPI()
+setup_tracing(app, "cinema_api")
 
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
