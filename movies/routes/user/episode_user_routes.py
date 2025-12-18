@@ -9,6 +9,8 @@ from schemas.episode import EpisodeResponse
 from schemas.episode_locale import EpisodeLocaleResponse
 from routes.utils.episode import load_episode_with_locales
 
+from metrics import EPISODE_VIEW_TOTAL
+
 router = APIRouter(prefix="/episodes", tags=["User"])
 
 
@@ -43,6 +45,7 @@ async def get_episode(
     episode_id: int,
     db: AsyncSession = Depends(get_session)
 ):
+    EPISODE_VIEW_TOTAL.labels(episode_id=str(episode_id)).inc()
     episode = await load_episode_with_locales(db, episode_id)
     if not episode:
         raise HTTPException(

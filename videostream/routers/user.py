@@ -6,6 +6,8 @@ from fastapi.responses import StreamingResponse
 from schemas.error import ErrorResponse
 from utils.logger import logger
 
+from utils.metrics import VIDEO_STREAMING_REQUESTS_TOTAL, VIDEO_PLAYBACK_ERRORS_TOTAL
+
 api_router = APIRouter(tags=["user"])
 
 s3_client = boto3.client(
@@ -34,14 +36,18 @@ async def stream_audio_hls(id: str, filename: str) -> StreamingResponse:
     try:
         s3_response = s3_client.get_object(Bucket=bucket_name, Key=f"{id}/{filename}")
     except ClientError as e:
+        VIDEO_PLAYBACK_ERRORS_TOTAL.labels(error_type="s3_client_error", movie_id=id).inc()
         raise HTTPException(status_code=404, detail=f"File not found: {e}")
 
     if filename.endswith(".m3u8"):
         media_type = "application/vnd.apple.mpegurl"
+        VIDEO_STREAMING_REQUESTS_TOTAL.labels(type="playlist", movie_id=id).inc()
     elif filename.endswith(".ts"):
         media_type = "video/mp2t"
+        VIDEO_STREAMING_REQUESTS_TOTAL.labels(type="segment", movie_id=id).inc()
     else:
         media_type = "application/octet-stream"
+        VIDEO_STREAMING_REQUESTS_TOTAL.labels(type="other", movie_id=id).inc()
 
     logger.debug(f"{id}/{filename}: file streaming")
 

@@ -7,6 +7,8 @@ from session import get_session
 from db import queries
 from schemas.person import PersonResponse
 
+from metrics import PERSON_VIEW_TOTAL
+
 router = APIRouter(prefix="/persons", tags=["User"])
 
 
@@ -33,6 +35,7 @@ async def get_person(
     person_id: int,
     db: AsyncSession = Depends(get_session)
 ):
+    PERSON_VIEW_TOTAL.labels(person_id=str(person_id)).inc()
     db_person = await queries.get_person(db, person_id)
     if not db_person:
         raise HTTPException(

@@ -8,6 +8,8 @@ from db import queries
 from schemas.entry import EntryResponse
 from routes.utils.entry import load_entry_details
 
+from metrics import MOVIE_VIEW_DETAILS_TOTAL
+
 router = APIRouter(prefix="/entries", tags=["User"])
 
 
@@ -41,6 +43,7 @@ async def get_entry(
     entry_id: int,
     db: AsyncSession = Depends(get_session)
 ):
+    MOVIE_VIEW_DETAILS_TOTAL.labels(movie_id=str(entry_id)).inc()
     entry = await load_entry_details(db, entry_id)
     if not entry:
         raise HTTPException(

@@ -7,6 +7,8 @@ from session import get_session
 from db import queries
 from schemas.genre import GenreResponse
 
+from metrics import GENRE_VIEW_TOTAL
+
 router = APIRouter(prefix="/genres", tags=["User"])
 
 
@@ -33,6 +35,7 @@ async def get_genre(
     genre_id: int,
     db: AsyncSession = Depends(get_session)
 ):
+    GENRE_VIEW_TOTAL.labels(genre_id=str(genre_id)).inc()
     db_genre = await queries.get_genre(db, genre_id)
     if not db_genre:
         raise HTTPException(
