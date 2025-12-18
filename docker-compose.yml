@@ -33,6 +33,24 @@ services:
     networks:
       - cinema_net
 
+  videostream:
+    build: ./videostream
+    container_name: cinema_videostream
+    depends_on:
+      - minio
+      - redis
+    environment:
+      - S3_BUCKET=movies
+      - S3_ENDPOINT_URL=http://minio:9000
+      - aws_access_key_id=minioadmin
+      - aws_secret_access_key=minioadmin
+      - REDIS_URL=redis://redis:6379/0
+      - LOG_LEVEL=20
+    ports:
+      - "8002:8002"
+    networks:
+      - cinema_net
+
   prometheus:
     image: prom/prometheus:latest
     container_name: cinema_prometheus
@@ -137,6 +155,14 @@ services:
       /usr/bin/mc policy set public myminio/movies;
       exit 0;
       "
+    networks:
+      - cinema_net
+
+  redis:
+    image: redis:7-alpine
+    container_name: cinema_redis
+    ports:
+      - "6379:6379"
     networks:
       - cinema_net
 

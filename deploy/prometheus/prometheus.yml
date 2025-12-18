@@ -9,3 +9,15 @@ scrape_configs:
   - job_name: 'jaeger'
     static_configs:
       - targets: ['jaeger:14269']
+
+  - job_name: 'cinema_api'
+    static_configs:
+      - targets: ['cinema_api:8000']
+
+  - job_name: 'etl_worker'
+    static_configs:
+      - targets: ['etl_worker:8001']
+
+  - job_name: 'videostream'
+    static_configs:
+      - targets: ['cinema_videostream:8002']
