@@ -3,7 +3,7 @@
 up:
 	[ -f videostream/.env ] || cp videostream/.env.example videostream/.env
 	[ -f movies/.env ] || cp movies/.env.example movies/.env
-	docker-compose up -d
+	docker-compose up -d --build
 
 down:
 	docker-compose down

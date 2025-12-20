@@ -21,8 +21,11 @@ services:
       - cinema_net
 
   etl_worker:
-    build: ./movies
-    command: python -m elastic.sync_worker
+    image: python:3.12
+    volumes:
+      - ./movies:/app
+    working_dir: /app
+    entrypoint: ["./etl_worker.sh"]
     depends_on: [postgres, elasticsearch]
     env_file:
       - ./movies/.env
