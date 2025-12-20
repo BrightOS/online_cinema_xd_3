@@ -6,9 +6,16 @@
 pip install -r requirements.txt
 ```
 
-### 2. Redis / MinIO
+### 2. Redis / MinIO / FFMPEG
 
 ну тут как-бы сами
+
+если запускаете из докера, то там ffmpeg устанавливается, если же нет:
+```
+apt-get -y update
+apt-get -y upgrade
+apt-get install -y ffmpeg
+```
 
 ### 3. енвы
 
