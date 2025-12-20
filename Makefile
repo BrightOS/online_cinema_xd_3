@@ -1,21 +1,23 @@
 .PHONY: up down restart logs ps
 
 up:
-	docker compose up -d
+	[ -f videostream/.env ] || cp videostream/.env.example videostream/.env
+	[ -f movies/.env ] || cp movies/.env.example movies/.env
+	docker-compose up -d
 
 down:
-	docker compose down
+	docker-compose down
 
 restart: down up
 
 logs:
-	docker compose logs -f
+	docker-compose logs -f
 
 ps:
-	docker compose ps
+	docker-compose ps
 
 up-observability:
-	docker compose up -d prometheus grafana jaeger
+	docker-compose up -d prometheus grafana jaeger
 
 up-core:
-	docker compose up -d postgres elasticsearch minio
+	docker-compose up -d postgres elasticsearch minio
