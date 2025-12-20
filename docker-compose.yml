@@ -36,8 +36,13 @@ services:
       - cinema_net
 
   videostream:
-    build: ./videostream
+    build:
+      context: ./videostream
+      dockerfile: Dockerfile
     container_name: cinema_videostream
+    volumes:
+      - ./videostream:/app
+    working_dir: /app
     depends_on:
       - minio
       - redis

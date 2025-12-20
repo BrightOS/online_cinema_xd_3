@@ -1,4 +1,4 @@
-.PHONY: up down restart logs ps
+.PHONY: up down restart logs ps force-restart
 
 up:
 	[ -f videostream/.env ] || cp videostream/.env.example videostream/.env
@@ -9,6 +9,9 @@ down:
 	docker-compose down
 
 restart: down up
+
+force-restart: down
+	docker-compose up -d --build --force-recreate
 
 logs:
 	docker-compose logs -f
