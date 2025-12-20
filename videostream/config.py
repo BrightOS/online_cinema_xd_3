@@ -38,9 +38,9 @@ class CelerySettings:
         self.app.conf.result_backend = settings.REDIS_URL
 
         self.app.conf.include = ["utils.process"]
-        self.app.conf.task_serializer = "pickle"
-        self.app.conf.accept_content = ["pickle"]
-        self.app.conf.result_serializer = "pickle"
+        self.app.conf.task_serializer = "json"
+        self.app.conf.accept_content = ["json"]
+        self.app.conf.result_serializer = "json"
         self.app.conf.timezone = "UTC"
 
 
